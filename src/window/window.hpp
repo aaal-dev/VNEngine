@@ -2,100 +2,44 @@
 
 #include <string>
 
+#include <GLFW/glfw3.h>
+
 class Window {
-	GLFWwindow *window;
 public:
 	std::string title;
 	int width,  minWidth {640};
 	int height, minHeight {480};
 	
-	void create() { 
-		window = glfwCreateWindow(width, height, title.data(), NULL, NULL); 
-		glfwSetWindowSizeLimits(window, minWidth, minHeight, GLFW_DONT_CARE, GLFW_DONT_CARE);
-	}
-	void close() { glfwSetWindowShouldClose(window, GL_TRUE); }
-	void destroy() { glfwDestroyWindow(window); }
+	void create();
+	void destroy();
 	
-	bool update() {
-		glfwSwapBuffers(window);
-		return !glfwWindowShouldClose(window);
-	}
+	void close();
+	bool update();
 	
-	void updateTitle(std::string const &text) {
-		std::string newTitle = title + " " + text;
-		glfwSetWindowTitle(window, newTitle.data());
-	}
+	void updateTitle(std::string const &text);
 	
-	bool exist() { return (bool)window; }
-	void makeActive() { glfwMakeContextCurrent(window); }
-	void swapInterval(int interval) { glfwSwapInterval(interval); }
+	bool exist();
+	void makeActive();
+	void swapInterval(int interval);
 	
-	void keyboardCallback(GLFWkeyfun callbackFunction) {
-		glfwSetKeyCallback(window, callbackFunction);
-	}
+	void keyboardCallback(GLFWkeyfun callbackFunction);
+	void keyboardCharacterCallback(GLFWcharfun callbackFunction);
+	void keyboardCharacterModifiersCallback(GLFWcharmodsfun callbackFunction);
+	void mouseButtonCallback(GLFWmousebuttonfun callbackFunction);
+	void mousePositionCallback(GLFWcursorposfun callbackFunction);
+	void mouseEnterCallback(GLFWcursorenterfun callbackFunction);
+	void mouseScrollCallback(GLFWscrollfun callbackFunction);
+	void dropCallback(GLFWdropfun callbackFunction);
+	void windowPositionCallback(GLFWwindowposfun callbackFunction);
+	void windowSizeCallback(GLFWwindowsizefun callbackFunction);
+	void windowCloseCallback(GLFWwindowclosefun callbackFunction);
+	void windowRefreshCallback(GLFWwindowrefreshfun callbackFunction);
+	void windowFocusCallback(GLFWwindowfocusfun callbackFunction);
+	void windowIconifyCallback(GLFWwindowiconifyfun callbackFunction);
+	void windowMaximizeCallback(GLFWwindowmaximizefun callbackFunction);
+	void framebufferSizeCallback(GLFWframebuffersizefun callbackFunction);
+	void windowContentScaleCallback(GLFWwindowcontentscalefun callbackFunction);
 	
-	void keyboardCharacterCallback(GLFWcharfun callbackFunction) {
-		glfwSetCharCallback(window, callbackFunction);
-	}
-	
-	void keyboardCharacterModifiersCallback(GLFWcharmodsfun callbackFunction) {
-		glfwSetCharModsCallback(window, callbackFunction);
-	}
-	
-	void mouseButtonCallback(GLFWmousebuttonfun callbackFunction) {
-		glfwSetMouseButtonCallback(window, callbackFunction);
-	}
-	
-	void mousePositionCallback(GLFWcursorposfun callbackFunction) {
-		glfwSetCursorPosCallback(window, callbackFunction);
-	}
-	
-	void mouseEnterCallback(GLFWcursorenterfun callbackFunction) {
-		glfwSetCursorEnterCallback(window, callbackFunction);
-	}
-	
-	void mouseScrollCallback(GLFWscrollfun callbackFunction) {
-		glfwSetScrollCallback(window, callbackFunction); 
-	}
-	
-	void dropCallback(GLFWdropfun callbackFunction) {
-		glfwSetDropCallback(window, callbackFunction);
-	}
-	
-	void windowPositionCallback(GLFWwindowposfun callbackFunction) {
-		glfwSetWindowPosCallback(window, callbackFunction);
-	}
-	
-	void windowSizeCallback(GLFWwindowsizefun callbackFunction) {
-		glfwSetWindowSizeCallback(window, callbackFunction);
-	}
-	
-	void windowCloseCallback(GLFWwindowclosefun callbackFunction) {
-		glfwSetWindowCloseCallback(window, callbackFunction);
-	}
-	
-	void windowRefreshCallback(GLFWwindowrefreshfun callbackFunction) {
-		glfwSetWindowRefreshCallback(window, callbackFunction);
-	}
-	
-	void windowFocusCallback(GLFWwindowfocusfun callbackFunction) {
-		glfwSetWindowFocusCallback(window, callbackFunction);
-	}
-	
-	void windowIconifyCallback(GLFWwindowiconifyfun callbackFunction) {
-		glfwSetWindowIconifyCallback(window, callbackFunction);
-	}
-	
-	void windowMaximizeCallback(GLFWwindowmaximizefun callbackFunction) {
-		glfwSetWindowMaximizeCallback(window, callbackFunction);
-	}
-	
-	void framebufferSizeCallback(GLFWframebuffersizefun callbackFunction) {
-		glfwSetFramebufferSizeCallback(window, callbackFunction);
-	}
-	
-	void windowContentScaleCallback(GLFWwindowcontentscalefun callbackFunction) {
-		glfwSetWindowContentScaleCallback(window, callbackFunction);
-	}
-	
+private:
+	GLFWwindow *window;
 };

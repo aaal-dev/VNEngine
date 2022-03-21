@@ -4,17 +4,25 @@
 #include "../log/log.hpp"
 #include "openal.hpp"
 
-class AudioManager
-{
-	// Variables
-	static Log*           log;
-//	static ConfigManager* configManager;
-//	Config*               config;
-	
+class AudioManager {
 public:
+// -------------------------------------------------------- public.variables --
+// -------------------------------------------------------- public.functions --
+	/**
+	 * @brief
+	 * @return
+	 */
 	bool     init();
-	         AudioManager();
+
+private:
+// ------------------------------------------------------- private.variables --
+
+	static Log  *log;
+
+// ------------------------------------------------------- private.functions --
+
+public:
+	AudioManager();
 	virtual ~AudioManager();
 
 };
-

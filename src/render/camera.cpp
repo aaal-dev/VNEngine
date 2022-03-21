@@ -25,29 +25,29 @@ Camera::~Camera () {}
 // ----------------------------------------------------------- public:Camera -- 
 
 void Camera::update () {
-    movementSpeed = 2.5f * timeManager->deltaTime();
-    aspectRatio = controlManager->screen.aspectRatio;
+//	movementSpeed = 2.5f * timeManager->deltaTime();
+//	aspectRatio = controlManager->screen.aspectRatio;
 
-    if (controlManager->keyboard.key[KEY_W] == true) {
-        moveForward();
-    }
-    if (controlManager->keyboard.key[KEY_S] == true) {
-        moveBackward();
-    }
-    if (controlManager->keyboard.key[KEY_A] == true) {
-        moveLeft();
-    }
-    if (controlManager->keyboard.key[KEY_D] == true) {
-        moveRight();
-    }
-
-    yaw += controlManager->mouse.offsetx;
-    pitch += controlManager->mouse.offsety;
-    if(yaw > 89.0f)
-        yaw =  89.0f;
-    if(pitch < -89.0f)
-        pitch = -89.0f;
-    screenPoint = controlManager->mouse.screenPosition;
+//	if (controlManager->keyboard.key[KEY_W] == true) {
+//		moveForward();
+//	}
+//	if (controlManager->keyboard.key[KEY_S] == true) {
+//		moveBackward();
+//	}
+//	if (controlManager->keyboard.key[KEY_A] == true) {
+//		moveLeft();
+//	}
+//	if (controlManager->keyboard.key[KEY_D] == true) {
+//		moveRight();
+//	}
+	
+//	yaw += controlManager->mouse.offsetx;
+//	pitch += controlManager->mouse.offsety;
+	if(yaw > 89.0f)
+		yaw =  89.0f;
+	if(pitch < -89.0f)
+		pitch = -89.0f;
+//	screenPoint = controlManager->mouse.screenPosition;
 
 
     calculate();

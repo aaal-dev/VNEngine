@@ -1,6 +1,5 @@
 #pragma once
 
-// Inner classes
 #include "entity.hpp"
 
 struct Sprite : public Entity {

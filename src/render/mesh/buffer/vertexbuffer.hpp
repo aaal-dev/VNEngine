@@ -1,9 +1,7 @@
 #pragma once
 
-// GLAD
 #include "glad/glad.h"
 
-// Inner classes
 #include "../vertex.hpp"
 
 class VertexBuffer {

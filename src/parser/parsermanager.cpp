@@ -16,17 +16,13 @@ bool ParserManager::init () {
 	return true;
 }
 
-NodeTree* ParserManager::parseFile(IParser* parser) {
-	return parser->run();
-}
-
-TOMLTree* ParserManager::parseTOMLFile (std::string const &filepath) {
-	std::unique_ptr<IParser> parser = std::make_unique<TOMLParser>(filepath);
+std::unique_ptr<TOMLTree> ParserManager::parseTOMLFile (std::string const &filepath) {
+	auto parser = std::make_unique<TOMLParser>(filepath);
 	return parseFile(parser.get());
 }
 
-YAMLTree* ParserManager::parseYAMLFile (std::string const &filepath) {
-	std::unique_ptr<IParser> parser = std::make_unique<YAMLParser>(filepath);
+std::unique_ptr<YAMLTree> ParserManager::parseYAMLFile (std::string const &filepath) {
+	auto parser = std::make_unique<YAMLParser>(filepath);
 	return parseFile(parser.get());
 }
 
@@ -48,4 +44,10 @@ std::string ParserManager::readShaderFile (std::string const &filepath) {
 	
 	fclose(file);
 	return result;   
+}
+
+// --------------------------------------------------- private.ParserManager -- 
+
+std::unique_ptr<NodeTree> ParserManager::parseFile(IParser* parser) {
+	return parser->run();
 }

@@ -2,18 +2,15 @@
 
 // ------------------------------------------------------------- public.Node -- 
 
-void Node::insert(Node* node) {
-	indexes.insert(std::make_pair(node->key, indexes.size()));
-	nodes.push_back(node);
+void Node::insert(std::unique_ptr<Node> node) {
+	indexes.insert({node->key, indexes.size()});
+	nodes.emplace_back(std::move(node));
 	count = nodes.size();
 }
 
-void Node::remove(Node* node) {
-	
-}
-
-Node* Node::search(std::string const &key) {
-	return (*this)[key];
+Node* Node::find(std::string const &key) {
+	auto index = indexes.find(key);
+	return index == indexes.end() ? nullptr : nodes[index->second].get();
 }
 
 bool Node::empty() {
@@ -21,6 +18,5 @@ bool Node::empty() {
 }
 
 Node* Node::operator[](std::string const &key) {
-	auto i = indexes.find(key);
-	return i == indexes.end() ? nullptr : nodes[i->second];
+	return find(key);
 }

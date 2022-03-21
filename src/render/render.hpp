@@ -1,13 +1,11 @@
-#pragma once 
+#pragma once
 
 #include <iostream>
 #include <deque>
 #include <vector>
 
-// GLAD
 #include "glad/glad.h"
 
-// Inner classes
 #include "../log/log.hpp"
 #include "../control/controlmanager.hpp"
 #include "../maths/maths.hpp"
@@ -17,7 +15,7 @@
 
 class Render {
 public:
-	// ---------------------------------------------------- public.functions -- 
+// -------------------------------------------------------- public.functions --
 	void  reset();
 	void  update();
 	void  submit(std::deque<Mesh*> meshes);
@@ -30,7 +28,7 @@ public:
 	
 	
 private:
-	// --------------------------------------------------- private.variables -- 
+// ------------------------------------------------------- private.variables --
 	static Log *log;
 	acb::Section *config {nullptr};
 	static TimeManager *timeManager;
@@ -40,6 +38,6 @@ private:
 	
 	
 public:
-	         Render();
+	Render();
 	virtual ~Render();
 };

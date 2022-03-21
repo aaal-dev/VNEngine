@@ -36,7 +36,7 @@ class ObjectManager {
 			"sound",
 			"video"
 		};
-		int find(std::string &type);
+		int find(std::string const &type);
 	} objectType;
 	
 public:
@@ -51,8 +51,8 @@ public:
 	
 	bool init();
 	void collectObjects(std::string gamepath, std::string gamefile);
-	void obtainObject(NodeTree* &tree, std::string &dir);
-	void seekObjects(NodeTree* &tree, std::string &dir);
+	void obtainObject(NodeTree* tree, std::string &dir);
+	void seekObjects(NodeTree* tree, std::string &dir);
 	GameObject find(std::string const &id, ObjectType type);
 	                             ObjectManager();
 	virtual                     ~ObjectManager();

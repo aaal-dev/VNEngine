@@ -1,6 +1,5 @@
-#pragma once 
+#pragma once
 
-// GLFW
 #include <GLFW/glfw3.h>
 
 #define KEY_SPACE              32
@@ -56,7 +55,7 @@
 
 struct Keyboard {
 	bool key[255] = {false};
-
+	
 	void keyPressed(int key, int scancode, int action, int mode);
 	static void keyboardCallback
 	(GLFWwindow *window, int key, int scancode, int action, int mode);

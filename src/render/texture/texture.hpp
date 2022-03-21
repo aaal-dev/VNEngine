@@ -2,22 +2,11 @@
 
 #include <string>
 
-// GLAD
 #include "glad/glad.h"
 
-// Inner classes
 #include "texturemanager.hpp"
 
 class Texture {
-	GLuint   _id;
-	GLenum   _target;
-	GLenum   _format;
-	std::string   _filepath;
-	int _width;
-	int _height;
-	int _CPP;
-	
-	void generate();
 public:
 	void generate(GLenum target);
 	void terminate() const;
@@ -35,6 +24,18 @@ public:
 	inline const unsigned int height() const { return _height; }
 	inline const GLenum target() const { return _target; }
 	
+private:
+	GLuint   _id;
+	GLenum   _target;
+	GLenum   _format;
+	std::string   _filepath;
+	int _width;
+	int _height;
+	int _CPP;
+	
+	void generate();
+	
+public:
 	Texture();
 	Texture(GLenum const &target);
 	Texture(std::string const &filepath);

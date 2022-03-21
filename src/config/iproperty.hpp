@@ -2,8 +2,7 @@
 
 #include <string>
 
-namespace acb
-{
+namespace acb {
 
 enum class PropertyType {
 	NO_TYPE,
@@ -17,9 +16,9 @@ enum class PropertyType {
 struct IProperty {
 	std::string name;
 	PropertyType type;
-	IProperty(std::string const &name) 
+	IProperty(std::string const &name)
 		: name(name), type(PropertyType::NO_TYPE) {};
-	IProperty(std::string const &name, PropertyType const &type) 
+	IProperty(std::string const &name, PropertyType const &type)
 		: name(name), type(type) {};
 	virtual ~IProperty(void) {};
 };

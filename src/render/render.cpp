@@ -40,10 +40,10 @@ void Render::draw () {
 			mesh->vao.bind();
 			mesh->ebo.bind();
 			// Reloading shader by key 'R' for testing purpose
-			if (controlManager->keyboard.key[KEY_R] == true) {
-				controlManager->keyboard.key[KEY_R] = false;
-				mesh->shader.reload();
-			}
+//			if (controlManager->keyboard.key[KEY_R] == true) {
+//				controlManager->keyboard.key[KEY_R] = false;
+//				mesh->shader.reload();
+//			}
 			mesh->shader.enable();
 			mesh->shader.setUniformMat4("projection", camera.orthographicMatrix);
 			//mesh->shader.setUniformMat4("view_matrix", camera.lookAtMatrix);
@@ -54,11 +54,11 @@ void Render::draw () {
 			//mesh->shader.setUniformMat4("model_matrix", mat);
 			
 			
-			mesh->shader.setUniform2f("light_pos", controlManager->mouse.offset);
+//			mesh->shader.setUniform2f("light_pos", controlManager->mouse.offset);
 			//mesh->shader.setUniform2f("mouse", mousePos);
 			mesh->texture.bind();
 			
-			glViewport(0, 0, controlManager->screen.w, controlManager->screen.h);
+//			glViewport(0, 0, controlManager->screen.w, controlManager->screen.h);
 			glDrawElements(GL_TRIANGLES, mesh->ebo.count(), GL_UNSIGNED_INT, 0);
 			
 			mesh->texture.unbind();

@@ -2,15 +2,11 @@
 
 #include <vector>
 
-// GLAD
 #include "glad/glad.h"
 
-// GLM
 #include <glm/glm.hpp>
 
-// Inner classes
 #include "../../log/log.hpp"
-#include "../shader/shadermanager.hpp"
 #include "../shader/shader.hpp"
 #include "vertex.hpp"
 
@@ -19,8 +15,7 @@ class MeshManager {
 	using Index = std::map<std::string, unsigned int>;
 	
 	// Variables
-	       static Log*  log;
-	    ShaderManager   shaderManager;
+	static Log*  log;
 	
 	// Functions
 	             

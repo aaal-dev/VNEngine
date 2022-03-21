@@ -4,19 +4,19 @@ Log* ControlManager::log = nullptr;
 
 // ---------------------------------------------------------- ControlManager --
 
-ControlManager::ControlManager () {
+ControlManager::ControlManager() {
 	log = Log::get();
 }
 
-ControlManager::~ControlManager () {}
+ControlManager::~ControlManager() {}
 
 // --------------------------------------------------- public.ControlManager --
 
-void ControlManager::update () {
+void ControlManager::update() {
 	mouse.update();
 }
 
-void ControlManager::screenSize (int w, int h) {
+void ControlManager::screenSize(int w, int h) {
 	screen.w = w;
 	screen.h = h;
 	screen.update();

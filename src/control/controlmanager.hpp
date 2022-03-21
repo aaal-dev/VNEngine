@@ -1,6 +1,5 @@
 #pragma once
 
-// GLFW
 #include <GLFW/glfw3.h>
 
 #include "../config/configmanager.hpp"
@@ -26,8 +25,7 @@ struct Screen {
 
 
 
-class ControlManager
-{
+class ControlManager {
 public:
 	enum class  Movement {
 		FORWARD,
@@ -57,4 +55,3 @@ public:
 	ControlManager();
 	virtual  ~ControlManager();
 };
-

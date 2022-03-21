@@ -2,76 +2,75 @@
 
 Log* App::log = nullptr;
 
-// --------------------------------------------------------------------- App -- 
+// --------------------------------------------------------------------- App --
 
-App::App () {
+App::App() {
 	log = Log::get();
 }
 
-App::~App () { if (active) stop(); }
+App::~App() {
+	if(active) stop();
+}
 
-// -------------------------------------------------------------- public.App -- 
+// -------------------------------------------------------------- public.App --
 
-bool App::init () {
+bool App::init() {
 	// Logger
-	if (!log->init()) return false;
+	if(!log->init()) return false;
+
 	log->info("Appication initializing...");
-	
+
 	// Configurator
-	if (!configManager.init()) return false; // На всякий случай оставлю
+	if(!configManager.init()) return false;  // На всякий случай оставлю
+
 	config = configManager.createSection("App");
 	config->addProperty<std::string>("configFilePath", "app.ini");
-	
+
 	// In game management
-	if (!gameManager.init()) return false;
-	
+	if(!gameManager.init()) return false;
+
 	// Window management
-	if (!windowManager.init()) return false;
+	if(!windowManager.init()) return false;
+
 	windowManager.createWindow();
-	
-	if (!renderManager.init()) return false;
-	
+
+	if(!renderManager.init()) return false;
+
 //	if (!audioManager.init()) return false;
-	
-	// Collect settings from config file 
+
+	// Collect settings from config file
 	auto filepath = config->getValue<std::string>("configFilePath");
 	configManager.readTOMLFile(filepath);
-	
+
 	active = true;
 	log->done("Appication initialized");
 	return true;
 }
 
-void App::run () {
+void App::run() {
 	while(active) {
 		update();
 		proceed();
 	}
 }
 
-void App::stop () {
+void App::stop() {
 	active = false;
 //	timeManager->release();
 //	controlManager->release();
-//	configManager->release();
 	log->release();
-	
-	delete config;
 }
 
-// ------------------------------------------------------------- private.App -- 
+// ------------------------------------------------------------- private.App --
 
-void App::update () {
+void App::update() {
 	controlManager.update();
 //	timeManager->update();
-	render.update();
-	render.submit(renderManager.meshes);
+	renderManager.update();
 	active = windowManager.update();
-	
+
 }
 
-void App::proceed () {
-	render.reset();
-	render.draw();
+void App::proceed() {
+	renderManager.draw();
 }
-

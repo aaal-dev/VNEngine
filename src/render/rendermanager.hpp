@@ -5,16 +5,10 @@
 #include <cstring>
 #include <map>
 
-// GLAD
 #include "glad/glad.h"
-
-// GLFW
 #include <GLFW/glfw3.h>
-
-// GLM
 #include <glm/gtc/matrix_transform.hpp>
 
-// Inner classes
 #include "../log/log.hpp"
 #include "../config/configmanager.hpp"
 #include "../control/controlmanager.hpp"
@@ -24,6 +18,7 @@
 #include "mesh/frame.hpp"
 #include "mesh/mesh.hpp"
 #include "mesh/sprite.hpp"
+#include "render.hpp"
 
 struct CameraFrame {
 	unsigned char* data;
@@ -33,16 +28,18 @@ struct CameraFrame {
 
 class RenderManager {
 public:
-	// ---------------------------------------------------- public.Variables --
-	GLsizei width;
-	GLsizei height;
-	GLsizei aspectRatio;
-	mat4 orthographicMatrix;
-	mat4 perspectiveMatrix;
-	GLboolean *data;
-	std::deque<Mesh*>   meshes;
+// -------------------------------------------------------- public.variables --
 	
-	// ---------------------------------------------------- public.Functions -- 
+	GLsizei  width{1024};
+	GLsizei  height{768};
+	GLsizei  aspectRatio{0};
+	mat4  orthographicMatrix;
+	mat4  perspectiveMatrix;
+	std::unique_ptr<Render> render;
+	std::deque<std::unique_ptr<Mesh>>  meshes;
+	
+// -------------------------------------------------------- public.functions --
+	
 	bool init();
 	void update();
 	void reset();
@@ -51,16 +48,17 @@ public:
 	void changeViewport(int bX, int bY, int eX, int eY);
 	void setDrawProperties(std::map<std::string, bool> boolFromGui);
 	
-	
 private:
-	// --------------------------------------------------- private.Variables --
+// ------------------------------------------------------- private.variables --
+	
 	static Log *log;
 	acb::Section *config {nullptr};
 	static ControlManager *controlManager;
 	
-	// --------------------------------------------------- private.Functions -- 
-	void   logGLparams();
+// ------------------------------------------------------- private.functions --
 	
+	void  createMockUpObjects();
+	void   logGLparams();
 	
 public:
 	RenderManager();

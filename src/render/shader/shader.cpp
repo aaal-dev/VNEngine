@@ -2,27 +2,35 @@
 
 // ------------------------------------------------------------------ Shader -- 
 
-Shader::Shader() {}
-Shader::Shader(const std::string &vertexShaderFilepath, 
-	           const std::string &fragmentShaderFilepath,
-	           const std::string &geometryShaderFilepath)
+Shader::Shader () {}
+Shader::Shader (std::string const &vertexShaderFilepath,
+	            std::string const &fragmentShaderFilepath,
+	            std::string const &geometryShaderFilepath)
 	: _vertexShaderFilepath(vertexShaderFilepath), 
 	  _fragmentShaderFilepath(fragmentShaderFilepath),
 	  _geometryShaderFilepath(geometryShaderFilepath) {}
 
-// ----------------------------------------------------------- public:Shader -- 
+Shader::~Shader () {}
 
-void Shader::create() { _id = glCreateProgram(); }
-void Shader::destroy() const { glDeleteProgram(_id); }
-void Shader::enable() const { glUseProgram(_id); };
-void Shader::disable() const { glUseProgram(0); };
+// ----------------------------------------------------------- public.Shader -- 
 
-GLuint Shader::proceed () const {
-	ShaderManager manager;
-	return manager.link(_vertexShaderFilepath, _fragmentShaderFilepath);
+void Shader::create () {
+	_id = glCreateProgram();
 }
 
-void Shader::load (const std::string &vertexShaderFilepath, 
+void Shader::destroy () const {
+	glDeleteProgram(_id);
+}
+
+void Shader::enable () const {
+	glUseProgram(_id);
+}
+
+void Shader::disable () const {
+	glUseProgram(0);
+}
+
+void Shader::load (const std::string &vertexShaderFilepath,
                    const std::string &fragmentShaderFilepath,
                    const std::string &geometryShaderFilepath) {
 	_vertexShaderFilepath = vertexShaderFilepath;
@@ -39,32 +47,41 @@ void Shader::reload () {
 	}
 }
 
-void Shader::setUniform1f (const GLchar* name, float value) const { 
-	glUniform1f(getUniform(name), value); 
+void Shader::setUniform1f (const GLchar* name, float value) const {
+	glUniform1f(getUniform(name), value);
 }
 
-void Shader::setUniform1i (const GLchar* name, int value) const { 
-	glUniform1i(getUniform(name), value); 
+void Shader::setUniform1i (const GLchar* name, int value) const {
+	glUniform1i(getUniform(name), value);
 }
 
-void Shader::setUniform2f (const GLchar* name, const vec2 &vector) const { 
-	glUniform2f(getUniform(name), vector.x, vector.y); 
+void Shader::setUniform2f (const GLchar* name, const vec2 &vector) const {
+	glUniform2f(getUniform(name), vector.x, vector.y);
 }
 
-void Shader::setUniform3f (const GLchar* name, const vec3 &vector) const { 
+void Shader::setUniform3f (const GLchar* name, const vec3 &vector) const {
 	glUniform3f(getUniform(name), vector.x, vector.y, vector.z);
 }
 
-void Shader::setUniform4f (const GLchar* name, const vec4 &vector) const { 
-	glUniform4f(getUniform(name), vector.x, vector.y, vector.z, vector.w); 
+void Shader::setUniform4f (const GLchar* name, const vec4 &vector) const {
+	glUniform4f(getUniform(name), vector.x, vector.y, vector.z, vector.w);
 }
 
-void Shader::setUniformMat4 (const GLchar* name, const mat4 &matrix) const { 
-	glUniformMatrix4fv(getUniform(name), 1, GL_FALSE, matrix.elements); 
+void Shader::setUniformMat4 (const GLchar* name, const mat4 &matrix) const {
+	glUniformMatrix4fv(getUniform(name), 1, GL_FALSE, matrix.elements);
 }
 
-inline const GLint Shader::getUniform(const GLchar* name) const { 
-	return glGetUniformLocation(_id, name); 
+inline const GLint Shader::getUniform (const GLchar* name) const {
+	return glGetUniformLocation(_id, name);
 }
 
-inline const GLuint Shader::id() const { return _id; }
+inline const GLuint Shader::id () const {
+	return _id;
+}
+
+// ---------------------------------------------------------- private.Shader -- 
+
+GLuint Shader::proceed () const {
+	ShaderMaker maker;
+	return maker.link(_vertexShaderFilepath, _fragmentShaderFilepath);
+}

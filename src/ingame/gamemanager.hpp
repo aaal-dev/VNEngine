@@ -11,26 +11,26 @@
 
 class GameManager {
 public:
-	// ---------------------------------------------------- public.variables -- 
+// -------------------------------------------------------- public.variables --
 	ObjectManager objectManager;
 	SceneManager sceneManager;
-	
+
 	FoldersTree *foldersTree;
 	SceneTree *sceneTree;
-	
-	// ---------------------------------------------------- public.functions -- 
+
+// -------------------------------------------------------- public.functions --
 	bool init();
 	bool prepareGameInfo();
-	YAMLTree* readYAMLFile(std::string const &dirpath, std::string const &filename);
-	
-	
+	std::unique_ptr<YAMLTree> getYAMLTree
+	(std::string const &dirpath, std::string const &filename);
+
+
 private:
-	// --------------------------------------------------- private.variables --  
+// ------------------------------------------------------- private.variables --
 	static Log *log;
 	acb::Section *config {nullptr};
-	
+
 public:
 	GameManager();
 	virtual ~GameManager();
 };
-

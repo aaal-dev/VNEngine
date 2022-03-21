@@ -2,10 +2,8 @@
 
 #include <vector>
 
-// GLAD
 #include "glad/glad.h"
 
-// Inner classes
 #include "vertexbuffer.hpp"
 
 class VertexArray {

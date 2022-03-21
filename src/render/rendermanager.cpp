@@ -7,13 +7,10 @@ ControlManager* RenderManager::controlManager = nullptr;
 
 RenderManager::RenderManager () {
 	log = Log::get();
-	controlManager = ControlManager::get();
+//	controlManager = ControlManager::get();
 	
 	ConfigManager manager;
 	config = manager.createSection("Render");
-	
-	width = 1024;
-	height = 768;
 }
 
 RenderManager::~RenderManager () {}
@@ -40,58 +37,7 @@ bool RenderManager::init() {
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 	
-	// ------------------------------------------------------ MOCKUP OBJECTS --
-	// Setting up test sprites
-	std::vector<Entity*> entities;
-	for (int i = 1; i < 8; i+=1) {
-		Sprite* sprite = new Sprite();
-		sprite->name = "plane";
-		sprite->position = vec3(i, 1, i);
-		sprite->size = vec3(7, 7, 0);
-		sprite->origin = vec3(-1, -1, 0);
-		sprite->baseColor = RGBA(0.0f, 1.0f, 0.0f, 1.0f);
-		sprite->visible = true;
-		sprite->create();
-		
-		entities.push_back(sprite);
-	}
-	
-	// Extract vertices and indices from sprites 
-	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
-	unsigned int offset = 0;
-	for (const auto entity : entities) {
-		for (auto vertex : entity->vertices) {
-			vertices.push_back(vertex); 
-		}
-		for (const auto index : entity->indices) {
-			indices.push_back(index + offset);
-		}
-		offset += entity->vertices.size();
-	}
-	
-	// Convert sprites to mesh objects 
-	Mesh* mesh = new Mesh();
-	mesh->vao.bind();
-	{
-		mesh->vbo.create(&vertices.front(), vertices.size(), 3);
-		mesh->vbo.bind(); {
-			mesh->vbo.setAttribute(0, 3, GL_FLOAT, GL_FALSE, (const GLvoid*)0);
-			mesh->vbo.setAttribute(1, 2, GL_FLOAT, GL_FALSE, (const GLvoid*)offsetof(Vertex, texCoords));
-			mesh->vbo.setAttribute(2, 1, GL_FLOAT, GL_FALSE, (const GLvoid*)offsetof(Vertex, texID));
-			mesh->vbo.setAttribute(3, 3, GL_FLOAT, GL_FALSE, (const GLvoid*)offsetof(Vertex, normal));
-			mesh->vbo.setAttribute(4, 4, GL_UNSIGNED_BYTE, GL_TRUE, (const GLvoid*)offsetof(Vertex, color));
-		}
-		mesh->vbo.unbind();
-		mesh->ebo.create(&indices.front(), indices.size());
-	}
-	mesh->vao.unbind();
-	mesh->shader.load("../data/shaders/mesh.vert", "../data/shaders/mesh.frag");
-	mesh->texture.load("001.png");
-	
-	meshes.push_back(mesh);
-	
-	// -------------------------------------------------- end:MOCKUP OBJECTS --
+	render = std::make_unique<Render>();
 	
 	log->done("RENDER MANAGER initialized");
 	return true;
@@ -101,6 +47,13 @@ void RenderManager::update () {
 //	Configuration::Section* config = configManager->find("Video");
 //	width = config->getValue<int>("width");
 //	height = config->getValue<int>("height");
+	//render.update();
+	//render.submit(renderManager.meshes);
+}
+
+void RenderManager::draw() {
+	//render.reset();
+	//render.draw();
 }
 
 void RenderManager::changeViewport(int bX, int bY, int eX, int eY) {
@@ -108,6 +61,65 @@ void RenderManager::changeViewport(int bX, int bY, int eX, int eY) {
 }
 
 // --------------------------------------------------- private:RenderManager -- 
+
+void RenderManager::createMockUpObjects() {
+	// ------------------------------------------------------ MOCKUP OBJECTS --
+	// Setting up test sprites
+	std::vector<std::unique_ptr<Entity>> entities;
+	for (int i = 1; i < 8; i+=1) {
+		auto sprite = std::make_unique<Sprite>();
+		sprite->name = "plane";
+		sprite->position = vec3(i, 1, i);
+		sprite->size = vec3(7, 7, 0);
+		sprite->origin = vec3(-1, -1, 0);
+		sprite->baseColor = RGBA(0.0f, 1.0f, 0.0f, 1.0f);
+		sprite->visible = true;
+		sprite->create();
+		entities.push_back(std::move(sprite));
+	}
+	
+	// Extract vertices and indices from sprites 
+	std::vector<Vertex> vertices;
+	std::vector<unsigned int> indices;
+	unsigned int offset = 0;
+	for (auto const &entity : entities) {
+		for (auto vertex : entity->vertices) {
+			vertices.push_back(vertex); 
+		}
+		for (const auto &index : entity->indices) {
+			indices.push_back(index + offset);
+		}
+		offset += entity->vertices.size();
+	}
+	
+	// Convert sprites to mesh objects 
+	auto mesh = std::make_unique<Mesh>();
+	mesh->vao.bind();
+	{
+		mesh->vbo.create(&vertices.front(), vertices.size(), 3);
+		mesh->vbo.bind(); {
+			mesh->vbo.setAttribute(0, 3, GL_FLOAT, GL_FALSE, 
+				reinterpret_cast<const GLvoid*>(0));
+			mesh->vbo.setAttribute(1, 2, GL_FLOAT, GL_FALSE, 
+				reinterpret_cast<const GLvoid*>(offsetof(Vertex, texCoords)));
+			mesh->vbo.setAttribute(2, 1, GL_FLOAT, GL_FALSE, 
+				reinterpret_cast<const GLvoid*>(offsetof(Vertex, texID)));
+			mesh->vbo.setAttribute(3, 3, GL_FLOAT, GL_FALSE, 
+				reinterpret_cast<const GLvoid*>(offsetof(Vertex, normal)));
+			mesh->vbo.setAttribute(4, 4, GL_UNSIGNED_BYTE, GL_TRUE, 
+				reinterpret_cast<const GLvoid*>(offsetof(Vertex, color)));
+		}
+		mesh->vbo.unbind();
+		mesh->ebo.create(&indices.front(), indices.size());
+	}
+	mesh->vao.unbind();
+	mesh->shader.load("../data/shaders/mesh.vert", "../data/shaders/mesh.frag");
+	mesh->texture.load("001.png");
+	
+	meshes.push_back(std::move(mesh));
+	
+	// -------------------------------------------------- end:MOCKUP OBJECTS --
+}
 
 void RenderManager::logGLparams () {
 	 GLenum params[] = {

@@ -1,6 +1,5 @@
 #pragma once
 
-// Inner classes
 #include "buffer/vertexarray.hpp"
 #include "buffer/vertexbuffer.hpp"
 #include "buffer/elementbuffer.hpp"

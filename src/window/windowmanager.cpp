@@ -2,7 +2,7 @@
 
 Log* WindowManager::log = nullptr;
 
-// ----------------------------------------------------------- WindowManager -- 
+// ----------------------------------------------------------- WindowManager --
 
 WindowManager::WindowManager() {
 	log = Log::get();
@@ -16,12 +16,11 @@ WindowManager::WindowManager() {
 
 WindowManager::~WindowManager() {}
 
-// ---------------------------------------------------- public.WindowManager -- 
+// ---------------------------------------------------- public.WindowManager --
 
 bool WindowManager::init() {
 	log->info("WINDOW MANAGER initializing...");
 	
-	// Initialize GLFW
 	if(!glfwInit()) {
 		log->error("Failed to initialize GLFW");
 		return false;
@@ -51,7 +50,7 @@ bool WindowManager::init() {
 	glfwWindowHint(GLFW_DEPTH_BITS, 24);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 	
-	if (!getMonitors()) {
+	if(!getMonitors()) {
 		return false;
 	}
 	
@@ -74,8 +73,8 @@ bool WindowManager::createWindow() {
 	window.title = config->getValue<std::string>("title");
 	window.create();
 	
-	if (!window.exist()) {
-		log->error("Failed to create GLFW window" );
+	if(!window.exist()) {
+		log->error("Failed to create GLFW window");
 		terminate();
 		return false;
 	}
@@ -83,14 +82,14 @@ bool WindowManager::createWindow() {
 	// Configuration for window
 	window.makeActive();
 	window.swapInterval(0);
-	window.keyboardCallback(controlManager->keyboardCallback);
+//	window.keyboardCallback(controlManager->keyboardCallback);
 //	window.keyboardCharacterCallback(controlManager->keyboardCharacterCallback);
 //	window.keyboardCharacterModifiersCallback
 //	(controlManager->keyboardCharacterModifiersCallback);
-	window.mouseButtonCallback(controlManager->mouseButtonCallback);
-	window.mousePositionCallback(controlManager->mousePositionCallback);
+//	window.mouseButtonCallback(controlManager->mouseButtonCallback);
+//	window.mousePositionCallback(controlManager->mousePositionCallback);
 //	window.mouseEnterCallback(controlManager->mouseEnterCallback);
-	window.mouseScrollCallback(controlManager->mouseScrollCallback);
+//	window.mouseScrollCallback(controlManager->mouseScrollCallback);
 //	window.dropCallback(controlManager->dropCallback);
 //	window.windowPositionCallback(windowManager.windowPositionCallback);
 //	window.windowSizeCallback(windowManager.windowSizeCallback);
@@ -101,7 +100,7 @@ bool WindowManager::createWindow() {
 //	window.windowMaximizeCallback(windowManager.windowMaximizeCallback);
 	window.framebufferSizeCallback(framebufferSizeCallback);
 //	window.windowContentScaleCallback(windowManager.windowContentScaleCallback);
-	
+
 	log->info("Create GLFW window \"%s\"", window.title.data());
 	return true;
 }
@@ -110,26 +109,28 @@ void WindowManager::makeActive(GLFWwindow *window) {
 	int width {0};
 	int height {0};
 	glfwGetFramebufferSize(window, &width, &height);
-	controlManager->screenSize(width, height);
-	
+//	controlManager->screenSize(width, height);
+
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 void WindowManager::cleanup() {}
 
-// --------------------------------------------------- private.WindowManager -- 
+// --------------------------------------------------- private.WindowManager --
 
 float WindowManager::getFPS() {
-	static double previous_seconds = glfwGetTime ();
+	static double previous_seconds = glfwGetTime();
 	static int frame_count;
-	double current_seconds = glfwGetTime ();
+	double current_seconds = glfwGetTime();
 	double elapsed_seconds = current_seconds - previous_seconds;
 	static double fps;
-	if (elapsed_seconds > 0.25) {
+	
+	if(elapsed_seconds > 0.25) {
 		previous_seconds = current_seconds;
 		fps = (double)frame_count / elapsed_seconds;
 		frame_count = 0;
 	}
+	
 	frame_count++;
 	return fps;
 }
@@ -137,33 +138,39 @@ float WindowManager::getFPS() {
 bool WindowManager::getMonitors() {
 	GLFWmonitor **monitors = glfwGetMonitors(&monitorsCount);
 	GLFWmonitor *primaryMonitor = glfwGetPrimaryMonitor();
-	if (monitors == NULL) {
+	
+	if(monitors == NULL) {
 		log->error("No monitors was found by GLFW");
 		return false;
 	}
+	
 	Monitor **newMonitors = new Monitor*[monitorsCount];
-	for (int i = 0; i < monitorsCount; i++) {
+	
+	for(int i = 0; i < monitorsCount; i++) {
 		Monitor newMonitor;
 		newMonitor.monitor = monitors[i];
 		newMonitor.name = glfwGetMonitorName(monitors[i]);
-		newMonitor.videoModes = glfwGetVideoModes(monitors[i], 
-		                                          &newMonitor.videoModesCount);
+		newMonitor.videoModes = glfwGetVideoModes(monitors[i],
+		                        &newMonitor.videoModesCount);
 		newMonitor.curentVideoMode = glfwGetVideoMode(monitors[i]);
 		newMonitor.isPrimary = false;
-		if (monitors[i] == primaryMonitor) {
+		
+		if(monitors[i] == primaryMonitor) {
 			newMonitor.isPrimary = true;
 			this->primaryMonitor = &newMonitor;
 		}
+		
 		newMonitors[i] = &newMonitor;
 	}
+	
 	this->avalableMonitors = newMonitors;
 	return true;
 }
 
 
 
-  //////////////////////////////////////////////////////////////////////////////
- //                            Callback functions                            //
+//////////////////////////////////////////////////////////////////////////////
+//                            Callback functions                            //
 //////////////////////////////////////////////////////////////////////////////
 
 void WindowManager::glfwErrorCallback(int error, const char* description) {

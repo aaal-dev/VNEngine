@@ -1,46 +1,66 @@
 #pragma once
 
 #include <string>
-#include <map>
-#include <vector>
-#include <fstream>
-#include <algorithm>
+#include <memory>
 
 #include "../log/log.hpp"
 #include "../parser/parsermanager.hpp"
-#include "../utils/text.hpp"
+#include "../utils/textutils.hpp"
 
 #include "config.hpp"
 
-/***
- * ConfigManager class is to work with app settings
- * - read settings from a TOML file
- * - read settings from a YAML file <- TODO(1)
- * - get settings from args passed through command line <- TODO
- * - collect setting from whole application
- * - save settings into a TOML or YAML file <- TODO(2)
- * */
+/**
+ * @class ConfigManager
+ * @author drumbox
+ * @date 18/03/22
+ * @file configmanager.hpp
+ * @brief Work with app's settings
+ *
+ * Creates section of properties and collect them in acb::Config object.
+ * Gets settings data from a configuration files and fills existing sections
+ * with parsed data.
+ *
+ * @todo Read settings from a YAML file
+ * @todo Parse settings from args passed through command line
+ * @todo Save settings into a TOML or YAML file
+ */
 
 class ConfigManager {
-	using index = std::map<std::string, uint>;
-	
+
 public:
+// -------------------------------------------------------- public.variablse --
 	static acb::Config appConfig;
 	
-	// ---------------------------------------------------- public.Functions -- 
+// -------------------------------------------------------- public.functions --
+	/**
+	 * @brief Initional configuration of manager itself
+	 * @return Ok or not
+	 */
 	bool init();
-
+	
+	/**
+	 * @brief Creates a new section of properties
+	 * @param name Name of a section that needs to create
+	 * @return Pointer to a new section data
+	 */
 	acb::Section* createSection(std::string const &name);
+	
+	/**
+	 * @brief Finds a existing section of properties
+	 * @param name Name of a section that needs to find
+	 * @return Pointer to a found section data or nullptr
+	 */
 	acb::Section* findSection(std::string const &name);
 	
+	/**
+	 * @brief Parses a data from TOML configuration file to existing sections
+	 * @param filepath Path to TOML configuration file
+	 */
 	void readTOMLFile(std::string const &filepath);
-	// TODO(1) void readYAMLFile(std::string const &filepath);
-	// TODO(2) void writeToFile(std::string const &filepath);
 	
-private: 
-	// --------------------------------------------------- private.Variables -- 
+private:
+// ------------------------------------------------------- private.variables --
 	static Log* log;
-	
 	
 public:
 	ConfigManager();

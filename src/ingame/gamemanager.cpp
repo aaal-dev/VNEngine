@@ -2,27 +2,28 @@
 
 Log* GameManager::log = nullptr;
 
-// ------------------------------------------------------------- GameManager -- 
+// ------------------------------------------------------------- GameManager --
 
-GameManager::GameManager () {
+GameManager::GameManager() {
 	log = Log::get();
-	
+
 	ConfigManager manager;
 	config = manager.createSection("Game");
-	config->addProperty<std::string>("gamename", "game");
-	config->addProperty<std::string>("dirpath", "../data");
-	config->addProperty<std::string>("filename", "game.data");
+	config->addProperty<std::string> ("gamename", "game");
+	config->addProperty<std::string> ("dirpath", "../data");
+	config->addProperty<std::string> ("filename", "game.data");
 }
 
-GameManager::~GameManager () {}
+GameManager::~GameManager() {}
 
-// ------------------------------------------------------ public.GameManager -- 
+// ------------------------------------------------------ public.GameManager --
 
-bool GameManager::init () {
+bool GameManager::init() {
 	log->begin("GAME MANAGER initializing...");
-	if (!objectManager.init()) return false;
 	
-	if (!prepareGameInfo()) {
+	if(!objectManager.init()) return false;
+	
+	if(!prepareGameInfo()) {
 		log->error("Something wrong with configuration files, check them");
 		return false;
 	}
@@ -31,43 +32,49 @@ bool GameManager::init () {
 	return true;
 }
 
-bool GameManager::prepareGameInfo () {
-	auto dirpath = config->getValue<std::string>("dirpath") + "/";
-	auto filename = config->getValue<std::string>("filename");
-	YAMLTree *tree = readYAMLFile(dirpath, filename);
-	if (tree->empty()) {
-		log->warn("File %s not found in %s", filename.data(), dirpath.data());
+bool GameManager::prepareGameInfo() {
+	auto filename = config->getValue<std::string> ("filename");
+	auto dirpath = config->getValue<std::string> ("dirpath");
+	auto yamltree = getYAMLTree(dirpath, filename);
+	
+	if(yamltree->empty()) {
+		log->warn("Game not found in default diractory %s", dirpath.data());
 		return false;
-	} else {
-		objectManager.seekObjects(tree, dirpath);
 	}
+	
+	//objectManager.seekObjects(tree, dirpath);
 	return true;
 }
 
-YAMLTree* GameManager::readYAMLFile 
+std::unique_ptr<YAMLTree> GameManager::getYAMLTree
 (std::string const &dirpath, std::string const &filename) {
-	std::string filepath = dirpath + filename;
-	ParserManager *manager = new ParserManager;
-	YAMLTree *tree = manager->parseYAMLFile(filepath);
-	if (tree != nullptr) {
-		tree->key = "file";
-		tree->value = filename;
-		tree->insert(new Node("filename", filename));
-		tree->insert(new Node("path", dirpath));
-		Node *foldersNode = tree->nodes[0]->search("folders");
-		if (foldersNode != nullptr) {
-			for (auto folderNode : foldersNode->nodes) {
-				Node *node = folderNode->search("foldername");
-				if (node != nullptr) {
+	std::string filepath {dirpath + "/" + filename};
+	auto manager = std::make_unique<ParserManager>();
+	auto yamltree = manager->parseYAMLFile(filepath);
+	
+	if(yamltree != nullptr) {
+		yamltree->key = "file";
+		yamltree->value = filename;
+		yamltree->insert(std::make_unique<Node> ("filename", filename));
+		yamltree->insert(std::make_unique<Node> ("path", dirpath));
+		Node *foldersNode = yamltree->nodes[0]->find("folders");
+		
+		if(foldersNode != nullptr) {
+			for(auto &folderNode : foldersNode->nodes) {
+				Node *node = folderNode->find("foldername");
+				
+				if(node != nullptr) {
 					std::string foldername = node->value;
-					std::string nextDirpath = dirpath + foldername + "/";
+					std::string nextDirpath = dirpath + "/" + foldername;
 					std::string nextFilename = foldername + ".data";
-					YAMLTree *newTree = readYAMLFile(nextDirpath, nextFilename);
-					if (newTree != nullptr) folderNode->insert(newTree);
+					auto newTree = getYAMLTree(nextDirpath, nextFilename);
+					
+					if(newTree != nullptr) 
+						folderNode->insert(std::move(newTree));
 				}
 			}
 		}
 	}
-	delete manager;
-	return tree;
+	
+	return yamltree;
 }

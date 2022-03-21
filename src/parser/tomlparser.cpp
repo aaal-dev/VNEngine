@@ -1,4 +1,4 @@
-// TODO Собирать все строки, кроме пустых. Строки без важной информации 
+// TODO: Собирать все строки, кроме пустых. Строки без важной информации
 //      определять как мусорные
 // TODO Переводить текст в строчный формат для избавления разночтений
 
@@ -9,7 +9,7 @@ Log* TOMLParser::log = nullptr;
 const char* WHITESPACE = " \t";
 const char* commentline = ";#";
 
-//// ==== TOMLParser ====================================================== ////
+// -------------------------------------------------------------- TOMLParser -- 
 
 TOMLParser::TOMLParser () {
 	log = Log::get();
@@ -23,13 +23,23 @@ TOMLParser::TOMLParser (std::string const &filepath) : IParser(filepath) {
 
 TOMLParser::~TOMLParser () {}
 
-NodeTree* TOMLParser::parse (std::string const &filepath) {
+// ------------------------------------------------------- public.TOMLParser -- 
+
+std::unique_ptr<TOMLTree> TOMLParser::run () {
+	return parse(filepath);
+}
+
+// ------------------------------------------------------ private.TOMLParser -- 
+
+std::unique_ptr<TOMLTree> TOMLParser::parse (std::string const &filepath) {
 	std::ifstream file(filepath, std::ios::binary);
 	if (!file.is_open()) {
 		log->error("TOMLParser: could not open file %s for reading", 
 		          filepath.data());
 		return nullptr;
 	}
+	
+	log->info("Parsing file %s", filepath);
 	
 	Parser parser(file);
 	parser.nextline();
@@ -42,35 +52,27 @@ NodeTree* TOMLParser::parse (std::string const &filepath) {
 		}
 	}
 	
-	NodeTree* tree = new NodeTree();
-	parserLoop(parser, tree);
+	///@todo IMPORTANT!! Refactor whole parser to work with smart pointers
+	auto tree = std::make_unique<TOMLTree>();
+	parserLoop(parser, tree.get());
 	tree->type = NodeTree::NodeType::ROOT_NODE;
 	
 	file.close();
 	return tree;
 }
 
-NodeTree* TOMLParser::run() {
-	return parse(filepath);
-}
-
-void TOMLParser::parserLoop (TOMLParser::Parser &parser, Node* &node) {
+void TOMLParser::parserLoop (TOMLParser::Parser &parser, Node *node) {
 	bool isdone = false;
 	while (!(parser.done() || isdone)) {
 		trimLeft(parser.line, WHITESPACE);
 		if (parser.line[0] == ';' || parser.line[0] == '#') {
-			/***
-			 * Skipping lines of comments. Just do nothing. 
-			 * */
-			 parser.nextline();
+			// Skipping lines of comments. Just do nothing.
+			parser.nextline();
 		} else if (parser.line[0] == '[') {
-			/***
-			 * Determinating section of properties. Must be [name]
-			 * Try to get name of the section and create the object.
-			 * If section is determinated, start new parserLoop to get 
-			 * properties
-			 * */
-			
+			// Determinating section of properties. Must be [name].
+			// Try to get name of the section and create an object.
+			// If section is determinated, start new parserLoop to get 
+			// properties
 			trimComment(parser.line);
 			const auto lastChar = parser.line.find_first_of("]");
 			if (lastChar != std::string::npos && _issection == false) {
@@ -93,11 +95,8 @@ void TOMLParser::parserLoop (TOMLParser::Parser &parser, Node* &node) {
 				proceed(parser, node, false, name, parser.line, Node::NodeType::TRASH_NODE);
 			}
 		} else if (!parser.line.empty()) {
-			/***
-			 * Deteminating other lines as the lines of properies, 
-			 * they must be a 'key=value' pairs
-			 * */
-			 
+			// Deteminating other lines as the lines of properies, 
+			// they must be a 'key=value' pairs
 			trimComment(parser.line);
 			const auto equalsChar = parser.line.find_first_of("=");
 			if (equalsChar != std::string::npos) {
@@ -119,26 +118,26 @@ void TOMLParser::parserLoop (TOMLParser::Parser &parser, Node* &node) {
 	}
 }
 
-void TOMLParser::proceed(Parser &parser, Node* &node, bool issection,
+void TOMLParser::proceed(Parser &parser, Node *node, bool issection,
                          std::string &key, std::string &value,
 	                     Node::NodeType type) {
-	Node* childNode = new Node();
-	auto index = node->indexes.find(key);
-	if (index != node->indexes.end()) {
-		childNode = node->nodes[index->second];
-	}
-	childNode->key = key;
-	childNode->value = value;
-	childNode->type = type;
-	childNode->parent = node->index;
-	childNode->level = node->level + 1;
-	childNode->linenumber = parser.lineNumber;
-	
-	parser.nextline();
-	if (issection) {
-		parserLoop(parser, childNode);
-	}
-	node->insert(childNode);
+//	Node* childNode = new Node();
+//	auto index = node->indexes.find(key);
+//	if (index != node->indexes.end()) {
+//		childNode = node->nodes[index->second];
+//	}
+//	childNode->key = key;
+//	childNode->value = value;
+//	childNode->type = type;
+//	childNode->parent = node->index;
+//	childNode->level = node->level + 1;
+//	childNode->linenumber = parser.lineNumber;
+//	
+//	parser.nextline();
+//	if (issection) {
+//		parserLoop(parser, childNode);
+//	}
+//	node->insert(childNode);
 }
 
 void TOMLParser::trimLeft (std::string &line, const char* &left) {
