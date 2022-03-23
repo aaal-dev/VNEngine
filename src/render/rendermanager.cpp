@@ -37,7 +37,10 @@ bool RenderManager::init() {
 	glEnable(GL_BLEND);
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 	
+	createMockUpObjects();
 	render = std::make_unique<Render>();
+	render->submit(std::move(meshes));
+	
 	
 	log->done("RENDER MANAGER initialized");
 	return true;
@@ -65,22 +68,52 @@ void RenderManager::changeViewport(int bX, int bY, int eX, int eY) {
 void RenderManager::createMockUpObjects() {
 	// ------------------------------------------------------ MOCKUP OBJECTS --
 	// Setting up test sprites
-	std::vector<std::unique_ptr<Entity>> entities;
-	for (int i = 1; i < 8; i+=1) {
+	std::vector<std::unique_ptr<Entity>> entities1;
+	for (unsigned int i = 1; i < 9; ++i) {
 		auto sprite = std::make_unique<Sprite>();
 		sprite->name = "plane";
-		sprite->position = vec3(i, 1, i);
-		sprite->size = vec3(7, 7, 0);
+		sprite->position = vec3(i, 1, 0);
+		sprite->size = vec3(1, 1, 0);
 		sprite->origin = vec3(-1, -1, 0);
 		sprite->baseColor = RGBA(0.0f, 1.0f, 0.0f, 1.0f);
 		sprite->visible = true;
 		sprite->create();
-		entities.push_back(std::move(sprite));
+		entities1.push_back(std::move(sprite));
 	}
 	
+	std::unique_ptr<Mesh> mesh1 = convertToMesh(entities1);
+	mesh1->shader.load("../data/shaders/mesh.vert", "../data/shaders/mesh.frag");
+	mesh1->texture.load("001.png");
+	
+	meshes.push_back(std::move(mesh1));
+	
+	// Setting up test sprites
+	std::vector<std::unique_ptr<Entity>> entities2;
+	for (unsigned int i = 1; i < 9; ++i) {
+		auto sprite = std::make_unique<Sprite>();
+		sprite->name = "plane";
+		sprite->position = vec3(i, 2, 0);
+		sprite->size = vec3(1, 1, 0);
+		sprite->origin = vec3(-1, -1, 0);
+		sprite->baseColor = RGBA(0.0f, 1.0f, 0.0f, 1.0f);
+		sprite->visible = true;
+		sprite->create();
+		entities2.push_back(std::move(sprite));
+	}
+	
+	std::unique_ptr<Mesh> mesh2 = convertToMesh(entities2);
+	mesh2->shader.load("../data/shaders/mesh.vert", "../data/shaders/mesh.frag");
+	mesh2->texture.load("002.png");
+	
+	meshes.push_back(std::move(mesh2));
+	
+	// -------------------------------------------------- end:MOCKUP OBJECTS --
+}
+
+std::unique_ptr<Mesh> RenderManager::convertToMesh(std::vector<std::unique_ptr<Entity>> &entities) {
 	// Extract vertices and indices from sprites 
 	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
+	std::vector<Index> indices;
 	unsigned int offset = 0;
 	for (auto const &entity : entities) {
 		for (auto vertex : entity->vertices) {
@@ -97,7 +130,8 @@ void RenderManager::createMockUpObjects() {
 	mesh->vao.bind();
 	{
 		mesh->vbo.create(&vertices.front(), vertices.size(), 3);
-		mesh->vbo.bind(); {
+		mesh->vbo.bind(); 
+		{
 			mesh->vbo.setAttribute(0, 3, GL_FLOAT, GL_FALSE, 
 				reinterpret_cast<const GLvoid*>(0));
 			mesh->vbo.setAttribute(1, 2, GL_FLOAT, GL_FALSE, 
@@ -113,12 +147,8 @@ void RenderManager::createMockUpObjects() {
 		mesh->ebo.create(&indices.front(), indices.size());
 	}
 	mesh->vao.unbind();
-	mesh->shader.load("../data/shaders/mesh.vert", "../data/shaders/mesh.frag");
-	mesh->texture.load("001.png");
 	
-	meshes.push_back(std::move(mesh));
-	
-	// -------------------------------------------------- end:MOCKUP OBJECTS --
+	return mesh;
 }
 
 void RenderManager::logGLparams () {

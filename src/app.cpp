@@ -1,11 +1,10 @@
 #include "app.hpp"
 
-Log* App::log = nullptr;
-
 // --------------------------------------------------------------------- App --
 
 App::App() {
-	log = Log::get();
+	config = configManager.createSection("App");
+	config->addProperty<std::string>("configFilePath", "app.ini");
 }
 
 App::~App() {
@@ -17,23 +16,23 @@ App::~App() {
 bool App::init() {
 	// Logger
 	if(!log->init()) return false;
-
+	
 	log->info("Appication initializing...");
-
+	
 	// Configurator
 	if(!configManager.init()) return false;  // На всякий случай оставлю
-
-	config = configManager.createSection("App");
-	config->addProperty<std::string>("configFilePath", "app.ini");
-
+	
+	// Input Control
+	if(!controlManager.init()) return false;
+	
 	// In game management
 	if(!gameManager.init()) return false;
-
+	
 	// Window management
 	if(!windowManager.init()) return false;
-
+	
 	windowManager.createWindow();
-
+	
 	if(!renderManager.init()) return false;
 
 //	if (!audioManager.init()) return false;
@@ -64,7 +63,6 @@ void App::stop() {
 // ------------------------------------------------------------- private.App --
 
 void App::update() {
-	controlManager.update();
 //	timeManager->update();
 	renderManager.update();
 	active = windowManager.update();

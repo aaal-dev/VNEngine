@@ -8,6 +8,8 @@
 #include "../texture/texture.hpp"
 #include "vertex.hpp"
 
+using Index = unsigned int;
+
 struct Entity {
 	std::string name;
 	vec3 position;
@@ -16,7 +18,7 @@ struct Entity {
 	RGBA baseColor;
 	
 	std::vector<Vertex> vertices;
-	std::vector<unsigned int> indices;
+	std::vector<Index> indices;
 	
 	bool visible = true;
 	GLuint indicesOffset;

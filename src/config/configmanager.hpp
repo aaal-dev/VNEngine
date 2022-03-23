@@ -29,6 +29,7 @@ class ConfigManager {
 
 public:
 // -------------------------------------------------------- public.variablse --
+	
 	static acb::Config appConfig;
 	
 // -------------------------------------------------------- public.functions --

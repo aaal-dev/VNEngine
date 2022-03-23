@@ -1,9 +1,13 @@
 #pragma once
 
+#include "glad/glad.h"
+#include <GLFW/glfw3.h>
+
 //#include "audio/audio.hpp"
 #include "config/configmanager.hpp"
+#include "control/controlmanager.hpp"
 #include "ingame/gamemanager.hpp"
-#include "log/log.hpp"
+#include "log/uselog.hpp"
 #include "render/render.hpp"
 #include "render/rendermanager.hpp"
 //#include "time/timemanager.hpp"
@@ -17,7 +21,7 @@
  * @file app.hpp
  * @brief
  */
-class App {
+class App : public UseLog {
 	enum {
 		APP_FAIL,
 		APP_OK
@@ -44,14 +48,14 @@ public:
 private:
 // ------------------------------------------------------- private.variables --
 
-	static Log  *log;
 	acb::Section  *config {nullptr};
 
 	ConfigManager  configManager;
-	ControlManager  controlManager;
+	ControlManager controlManager;
 	GameManager  gameManager;
 	WindowManager  windowManager;
 	RenderManager  renderManager;
+	
 
 //	TimeManager  timeManager;
 //	AudioManager  audioManager;

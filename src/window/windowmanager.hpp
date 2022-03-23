@@ -8,7 +8,6 @@
 
 #include "../log/log.hpp"
 #include "../config/configmanager.hpp"
-#include "../control/controlmanager.hpp"
 
 #include "monitor.hpp"
 #include "window.hpp"
@@ -28,6 +27,7 @@ public:
 	void terminate();
 	bool createWindow();
 	void makeActive(GLFWwindow* window);
+	Window* getActive();
 	void cleanup();
 	
 	// Callback functions
@@ -39,11 +39,10 @@ private:
 
 	static Log *log;
 	acb::Section *config {nullptr};
-	static ControlManager *controlManager;
 	
 	unsigned int activeWindowIndx;
 	GLFWwindow *activeWindow;
-	Window window;
+	Window _window;
 	
 // ------------------------------------------------------- private.functions --
 

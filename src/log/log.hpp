@@ -89,6 +89,8 @@ private:
 	Log(Log &other) = delete;
 	Log(std::string const &dirpath);
 	~Log();
+	
+	Log& operator=(const Log&) = delete;
 };
 
 #endif /* LOG_HPP */

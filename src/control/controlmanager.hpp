@@ -2,12 +2,14 @@
 
 #include <GLFW/glfw3.h>
 
+#include "../actions/action.hpp"
+#include "../event/eventmanager.hpp"
 #include "../config/configmanager.hpp"
 #include "../log/log.hpp"
 #include "../maths/maths.hpp"
 
-#include "keyboard.hpp"
-#include "mouse.hpp"
+#include "keyboard/keyboard.hpp"
+#include "mouse/mouse.hpp"
 
 
 
@@ -36,11 +38,12 @@ public:
 		DOWN
 	};
 	// ---------------------------------------------------- public.variables --
-	Keyboard  keyboard;
-	Mouse  mouse;
+	static cob::Keyboard  keyboard;
+	static cob::Mouse  mouse;
 	Screen  screen;
 	
 	// ---------------------------------------------------- public.functions --
+	bool  init();
 	void  update();
 	void  screenSize(int w, int h);
 	

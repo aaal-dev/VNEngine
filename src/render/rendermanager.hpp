@@ -1,9 +1,10 @@
 #pragma once
 
-#include <deque>
-#include <vector>
+
 #include <cstring>
+#include <list>
 #include <map>
+#include <vector>
 
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
@@ -36,7 +37,7 @@ public:
 	mat4  orthographicMatrix;
 	mat4  perspectiveMatrix;
 	std::unique_ptr<Render> render;
-	std::deque<std::unique_ptr<Mesh>>  meshes;
+	std::list<std::unique_ptr<Mesh>>  meshes;
 	
 // -------------------------------------------------------- public.functions --
 	
@@ -58,6 +59,7 @@ private:
 // ------------------------------------------------------- private.functions --
 	
 	void  createMockUpObjects();
+	std::unique_ptr<Mesh> convertToMesh(std::vector<std::unique_ptr<Entity>> &entities);
 	void   logGLparams();
 	
 public:

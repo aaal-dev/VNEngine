@@ -25,7 +25,7 @@ static std::basic_string<T> toLowerCase(std::basic_string<T> const &str)
  * @return Converted string
  */
 template <typename T>
-static std::basic_string<T>& toLowerCase(std::basic_string<T> &str)
+inline std::basic_string<T>& toLowerCase(std::basic_string<T> &str)
 {
     std::transform(str.begin(), str.end(), str.begin(), ::tolower);
     return str;

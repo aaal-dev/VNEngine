@@ -60,7 +60,8 @@ bool WindowManager::init() {
 
 bool WindowManager::update() {
 	glfwPollEvents();
-	return window.update();
+	_window.update();
+	return _window.update();
 }
 
 void WindowManager::terminate() {
@@ -68,20 +69,20 @@ void WindowManager::terminate() {
 }
 
 bool WindowManager::createWindow() {
-	window.width = config->getValue<int>("width");
-	window.height = config->getValue<int>("height");
-	window.title = config->getValue<std::string>("title");
-	window.create();
+	_window.width = config->getValue<int>("width");
+	_window.height = config->getValue<int>("height");
+	_window.title = config->getValue<std::string>("title");
+	_window.create();
 	
-	if(!window.exist()) {
+	if(!_window.exist()) {
 		log->error("Failed to create GLFW window");
 		terminate();
 		return false;
 	}
 	
 	// Configuration for window
-	window.makeActive();
-	window.swapInterval(0);
+	_window.makeActive();
+	_window.swapInterval(0);
 //	window.keyboardCallback(controlManager->keyboardCallback);
 //	window.keyboardCharacterCallback(controlManager->keyboardCharacterCallback);
 //	window.keyboardCharacterModifiersCallback
@@ -98,10 +99,10 @@ bool WindowManager::createWindow() {
 //	window.windowFocusCallback(windowManager.windowFocusCallback);
 //	window.windowIconifyCallback(windowManager.windowIconifyCallback);
 //	window.windowMaximizeCallback(windowManager.windowMaximizeCallback);
-	window.framebufferSizeCallback(framebufferSizeCallback);
+//	_window.framebufferSizeCallback(framebufferSizeCallback);
 //	window.windowContentScaleCallback(windowManager.windowContentScaleCallback);
-
-	log->info("Create GLFW window \"%s\"", window.title.data());
+	
+	log->info("Create GLFW window \"%s\"", _window.title.data());
 	return true;
 }
 
@@ -112,6 +113,10 @@ void WindowManager::makeActive(GLFWwindow *window) {
 //	controlManager->screenSize(width, height);
 
 	//glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+Window* WindowManager::getActive() {
+	return &_window;
 }
 
 void WindowManager::cleanup() {}

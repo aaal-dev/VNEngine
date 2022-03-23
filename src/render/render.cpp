@@ -30,43 +30,40 @@ void Render::update () {
 	camera.update();
 }
 
-void Render::submit (std::deque<Mesh*> meshes) {
-	this->meshes = meshes;
+void Render::submit (std::list<std::unique_ptr<Mesh>> meshes) {
+	this->meshes = std::move(meshes);
 }
 
 void Render::draw () {
-	while (meshes.empty()) {
-		Mesh* mesh = meshes.front(); {
-			mesh->vao.bind();
-			mesh->ebo.bind();
-			// Reloading shader by key 'R' for testing purpose
+	for (auto const &mesh : meshes) {
+		mesh->vao.bind();
+		mesh->ebo.bind();
+		// Reloading shader by key 'R' for testing purpose
 //			if (controlManager->keyboard.key[KEY_R] == true) {
 //				controlManager->keyboard.key[KEY_R] = false;
 //				mesh->shader.reload();
 //			}
-			mesh->shader.enable();
-			mesh->shader.setUniformMat4("projection", camera.orthographicMatrix);
-			//mesh->shader.setUniformMat4("view_matrix", camera.lookAtMatrix);
-			
-			//glActiveTexture(GL_TEXTURE0);
-			//mat4 mat = mat4::translation(vec3(mousePos, 0));
-			//mat *= mat4::rotation(controlManager->mouse.x, mat4::ROTATION_Z);
-			//mesh->shader.setUniformMat4("model_matrix", mat);
-			
-			
+		mesh->shader.enable();
+		mesh->shader.setUniformMat4("projection", camera.orthographicMatrix);
+//			mesh->shader.setUniformMat4("view_matrix", camera.lookAtMatrix);
+		
+//			glActiveTexture(GL_TEXTURE0);
+//			mat4 mat = mat4::translation(vec3(mousePos, 0));
+//			mat *= mat4::rotation(controlManager->mouse.x, mat4::ROTATION_Z);
+//			mesh->shader.setUniformMat4("model_matrix", mat);
+		
+		
 //			mesh->shader.setUniform2f("light_pos", controlManager->mouse.offset);
-			//mesh->shader.setUniform2f("mouse", mousePos);
-			mesh->texture.bind();
-			
+//			mesh->shader.setUniform2f("mouse", mousePos);
+		mesh->texture.bind();
+		
 //			glViewport(0, 0, controlManager->screen.w, controlManager->screen.h);
-			glDrawElements(GL_TRIANGLES, mesh->ebo.count(), GL_UNSIGNED_INT, 0);
-			
-			mesh->texture.unbind();
-			mesh->shader.disable();
-			mesh->ebo.unbind();
-			mesh->vao.unbind();
-		}
-		meshes.pop_front();
+		glDrawElements(GL_TRIANGLES, mesh->ebo.count(), GL_UNSIGNED_INT, 0);
+		
+		mesh->texture.unbind();
+		mesh->shader.disable();
+		mesh->ebo.unbind();
+		mesh->vao.unbind();
 	}
 }
 

@@ -15,35 +15,35 @@
 class Shader {
 public:
 // -------------------------------------------------------- public.functions --
-	void   create();
-	void   destroy() const;
-	void   enable() const;
-	void   disable() const;
+	void  create();
+	void  destroy() const;
+	void  enable() const;
+	void  disable() const;
 	
-	void   load(std::string const &vertexShaderFilepath,
-	            std::string const &fragmentShaderFilepath,
-	            std::string const &geometryShaderFilepath = "");
-	void   reload();
+	void  load(std::string const &vertexShaderFilepath,
+	           std::string const &fragmentShaderFilepath,
+	           std::string const &geometryShaderFilepath = "");
+	void  reload();
 	
-	void   setUniform1f(GLchar const *name, float value) const;
-	void   setUniform1i(GLchar const *name, int value) const;
-	void   setUniform2f(GLchar const *name, vec2 const &vector) const;
-	void   setUniform3f(GLchar const *name, vec3 const &vector) const;
-	void   setUniform4f(GLchar const *name, vec4 const &vector) const;
-	void   setUniformMat4(GLchar const *name, mat4 const &matrix) const;
+	void  setUniform1f(GLchar const *name, float value) const;
+	void  setUniform1i(GLchar const *name, int value) const;
+	void  setUniform2f(GLchar const *name, vec2 const &vector) const;
+	void  setUniform3f(GLchar const *name, vec3 const &vector) const;
+	void  setUniform4f(GLchar const *name, vec4 const &vector) const;
+	void  setUniformMat4(GLchar const *name, mat4 const &matrix) const;
 	
 	inline const GLint  getUniform(GLchar const *name) const;
-	inline const GLuint id() const;
+	inline const GLuint  id() const;
 	
 private:
 // ------------------------------------------------------- private.variables --
-	GLuint   _id;
-	std::string   _vertexShaderFilepath;
-	std::string   _fragmentShaderFilepath;
-	std::string   _geometryShaderFilepath;
+	GLuint  _id{0};
+	std::string  _vertexShaderFilepath;
+	std::string  _fragmentShaderFilepath;
+	std::string  _geometryShaderFilepath;
 	
 // ------------------------------------------------------- private.functions --
-	GLuint proceed() const;
+	GLuint makeShaderProgram() const;
 	
 public:
 // ----------------------------------------------------------- public.Shader --

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <iostream>
-#include <deque>
+#include <list>
+#include <memory>
 #include <vector>
 
 #include "glad/glad.h"
@@ -18,7 +19,7 @@ public:
 // -------------------------------------------------------- public.functions --
 	void  reset();
 	void  update();
-	void  submit(std::deque<Mesh*> meshes);
+	void  submit(std::list<std::unique_ptr<Mesh>> meshes);
 	void  draw();
 	
 	void  translate(vec3 v);
@@ -34,7 +35,7 @@ private:
 	static TimeManager *timeManager;
 	
 	Camera  camera;
-	std::deque<Mesh*>  meshes;
+	std::list<std::unique_ptr<Mesh>>  meshes;
 	
 	
 public:

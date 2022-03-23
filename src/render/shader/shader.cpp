@@ -3,12 +3,14 @@
 // ------------------------------------------------------------------ Shader -- 
 
 Shader::Shader () {}
-Shader::Shader (std::string const &vertexShaderFilepath,
-	            std::string const &fragmentShaderFilepath,
-	            std::string const &geometryShaderFilepath)
-	: _vertexShaderFilepath(vertexShaderFilepath), 
+Shader::Shader
+	(std::string const &vertexShaderFilepath,
+	 std::string const &fragmentShaderFilepath,
+	 std::string const &geometryShaderFilepath)
+	: _vertexShaderFilepath(vertexShaderFilepath),
 	  _fragmentShaderFilepath(fragmentShaderFilepath),
-	  _geometryShaderFilepath(geometryShaderFilepath) {}
+	  _geometryShaderFilepath(geometryShaderFilepath) 
+	{}
 
 Shader::~Shader () {}
 
@@ -36,11 +38,11 @@ void Shader::load (const std::string &vertexShaderFilepath,
 	_vertexShaderFilepath = vertexShaderFilepath;
 	_fragmentShaderFilepath = fragmentShaderFilepath;
 	_geometryShaderFilepath = geometryShaderFilepath;
-	_id = proceed();
+	_id = makeShaderProgram();
 }
 
 void Shader::reload () {
-	GLuint newProgram = proceed();
+	GLuint newProgram = makeShaderProgram();
 	if (newProgram) {
 		destroy();
 		_id = newProgram;
@@ -81,7 +83,7 @@ inline const GLuint Shader::id () const {
 
 // ---------------------------------------------------------- private.Shader -- 
 
-GLuint Shader::proceed () const {
+GLuint Shader::makeShaderProgram () const {
 	ShaderMaker maker;
-	return maker.link(_vertexShaderFilepath, _fragmentShaderFilepath);
+	return maker.make(_vertexShaderFilepath, _fragmentShaderFilepath);
 }

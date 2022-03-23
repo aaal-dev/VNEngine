@@ -1,6 +1,8 @@
 #include "controlmanager.hpp"
 
 Log* ControlManager::log = nullptr;
+cob::Keyboard ControlManager::keyboard;
+cob::Mouse ControlManager::mouse;
 
 // ---------------------------------------------------------- ControlManager --
 
@@ -11,6 +13,17 @@ ControlManager::ControlManager() {
 ControlManager::~ControlManager() {}
 
 // --------------------------------------------------- public.ControlManager --
+
+bool ControlManager::init() {
+	auto keyEscapeAction = 
+		[]
+		()
+		{EventManager eventManager;
+		eventManager.execEvent("close_window");};
+	auto action = new actions::Action(keyEscapeAction);
+	keyboard.setKeyAction(GLFW_KEY_ESCAPE, action);
+	return true;
+}
 
 void ControlManager::update() {
 	mouse.update();
